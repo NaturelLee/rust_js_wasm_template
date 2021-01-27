@@ -1,21 +1,7 @@
 use wasm_bindgen::prelude::*;
 
-// for js to call
-#[wasm_bindgen(start)]
-pub fn run() -> Result<(), JsValue> {
-    let window = web_sys::window().expect("got window error");
-    let document = window.document().expect("got document error");
-    let body = document.body().expect("got body error");
-
-    let new_element = document.create_element("p")?;
-    new_element.set_inner_html("hello rust and wasm");
-
-    body.append_child(&new_element)?;
-
-    Ok(())
-}
-
 // use js in rust
+// 声明类似头文件
 #[wasm_bindgen(module = "/myClass.js")]
 extern "C" {
     type MyClass;
@@ -36,8 +22,19 @@ extern "C" {
 }
 
 #[wasm_bindgen(start)]
-pub fn start() {
-    log("hello");
+pub fn run() -> Result<(), JsValue> {
+    // for js to call
+    let window = web_sys::window().expect("got window error");
+    let document = window.document().expect("got document error");
+    let body = document.body().expect("got body error");
+
+    let new_element = document.create_element("p")?;
+    new_element.set_inner_html("hello rust and wasm");
+
+    body.append_child(&new_element)?;
+
+    // use js class in rust
+    log("hello js, this is rust");
 
     let ins = MyClass::new();
 
@@ -50,4 +47,6 @@ pub fn start() {
     assert_eq!(ins.num(), 90);
 
     log(&ins.render());
+
+    Ok(())
 }
