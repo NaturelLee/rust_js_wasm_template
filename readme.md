@@ -1,0 +1,1 @@
+Rust js wasm template
